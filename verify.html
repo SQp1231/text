@@ -1,6 +1,31 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MASTER BOT — توثيق</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1e1f22;color:#f2f3f5;font-family:Tahoma,"Segoe UI",sans-serif}.c{width:min(92vw,520px);background:#2b2d31;border-radius:16px;padding:28px;text-align:center;box-shadow:0 10px 40px #0008}
-h1{font-size:22px;margin:0 0 8px}p{color:#b5bac1;line-height:1.8;margin:6px 0}code{display:block;direction:ltr;margin:16px 0;padding:14px;border-radius:10px;background:#1e1f22;font-size:18px;word-break:break-all;color:#fff}
-button{border:0;border-radius:10px;padding:12px 22px;background:#5865f2;color:#fff;font-size:16px;cursor:pointer}button.ok{background:#248046}</style></head>
-<body><div class="c"><h1>✅ تمت الموافقة</h1><p>انسخ الكود وارجع لديسكورد، واضغط زر «أدخل الكود» والصقه.</p><code id="k">—</code><button id="b">نسخ الكود</button><p style="font-size:13px;margin-top:16px">MASTER BOT</p></div>
-<script>var k=new URLSearchParams(location.search).get('code')||'';document.getElementById('k').textContent=k||'ما فيه كود — ارجع واضغط «توثيق» مرة ثانية';document.getElementById('b').onclick=function(){navigator.clipboard.writeText(k).then(function(){var b=document.getElementById('b');b.textContent='تم النسخ ✓';b.className='ok';});};</script></body></html>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>SQ Master Bot — توثيق</title>
+<style>*{box-sizing:border-box}body{margin:0;padding:16px;min-height:100vh;display:grid;place-items:center;background:#1e1f22;color:#f2f3f5;font-family:Tahoma,"Segoe UI",sans-serif}.c{width:min(92vw,480px);background:#2b2d31;border-radius:16px;padding:32px 26px;text-align:center;box-shadow:0 10px 40px #0008}
+.i{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;font-size:30px;background:#5865f2}.i.ok{background:#248046}.i.bad{background:#da373c}.i.wait{background:#c27c0e}
+.s{width:28px;height:28px;border:3px solid #fff5;border-top-color:#fff;border-radius:50%;animation:r .8s linear infinite}@keyframes r{to{transform:rotate(1turn)}}
+h1{font-size:21px;margin:0 0 8px}p{color:#b5bac1;line-height:1.8;margin:6px 0}code{display:block;direction:ltr;margin:14px 0;padding:12px;border-radius:10px;background:#1e1f22;font-size:16px;word-break:break-all;color:#fff}
+button{border:0;border-radius:10px;padding:11px 22px;background:#5865f2;color:#fff;font-size:15px;cursor:pointer;font-family:inherit}small{display:block;margin-top:18px;color:#80848e}</style></head>
+<body><div class="c"><div class="i" id="i"><div class="s"></div></div><h1 id="t">جاري التوثيق…</h1><p id="d">لحظة، نوثّق حسابك.</p><div id="x"></div><small>SQ Master Bot</small></div>
+<script>(function(){
+var q=new URLSearchParams(location.search),code=q.get('code')||'',st=q.get('state')||'',base='';
+function $(id){return document.getElementById(id)}
+function show(kind,t,d){var i=$('i');i.className='i '+kind;i.textContent=kind=='ok'?'✓':kind=='bad'?'✕':kind=='wait'?'⏳':'?';$('t').textContent=t;$('d').textContent=d}
+function manual(){var c=document.createElement('code');c.textContent=code;var b=document.createElement('button');b.textContent='نسخ الكود';b.onclick=function(){navigator.clipboard.writeText(code).then(function(){b.textContent='تم النسخ ✓'})};$('x').replaceChildren(c,b)}
+try{history.replaceState(null,'',location.pathname)}catch(e){}
+if(q.get('error')){show('bad','ما تم التوثيق','ما وافقت في صفحة ديسكورد. ارجع واضغط «توثيق» مرة ثانية ووافق.');return}
+if(!code){show('bad','افتح الصفحة من ديسكورد','اضغط زر «توثيق» في السيرفر.');return}
+try{if(st.indexOf('v1.')===0){var b=st.slice(3).replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';var h=atob(b);if(/^\d{16,22}\/[\w-]{20,100}$/.test(h))base='https://discord.com/api/v10/webhooks/'+h}}catch(e){}
+if(!base){show('wait','انسخ الكود','انسخ الكود، ارجع لديسكورد واضغط «أدخل الكود» والصقه.');manual();return}
+var ERR={code:'الكود انتهى أو انستخدم. ارجع لديسكورد واضغط «توثيق» مرة ثانية.',expired:'تأخر الطلب وانتهى الكود. ارجع لديسكورد واضغط «توثيق» مرة ثانية.',scope:'لازم توافق على «الانضمام للسيرفرات». اضغط «توثيق» مرة ثانية.',setup:'التوثيق مو مضبوط عند صاحب السيرفر. كلّم الإدارة.',failed:'صار خطأ. جرّب مرة ثانية بعد شوي.'};
+function del(id){fetch(base+'/messages/'+id,{method:'DELETE'}).catch(function(){})}
+function poll(id,n){setTimeout(function(){fetch(base+'/messages/'+id).then(function(r){return r.ok?r.json():null}).then(function(m){var c=(m&&m.content)||'';
+if(c.indexOf('OK ')===0){show('ok','تم توثيقك ✓','');var n2=document.createElement('bdi');n2.textContent=c.slice(3);$('d').replaceChildren('أهلًا ',n2,' — ارجع لديسكورد، الرومات انفتحت لك. تقدر تسكر الصفحة.');del(id)}
+else if(c.indexOf('ERR ')===0){show('bad','ما تم التوثيق',ERR[c.slice(4)]||ERR.failed);del(id)}
+else if(!m&&n>2){show('bad','ما تم التوثيق',ERR.failed)}
+else if(n<40)poll(id,n+1);
+else show('wait','وصل طلبك','البوت مشغول أو مو شغال الحين. لو ما انفتحت لك الرومات خلال دقائق، ارجع واضغط «توثيق» مرة ثانية.')}).catch(function(){n<40?poll(id,n+1):show('wait','وصل طلبك','لو ما انفتحت لك الرومات خلال دقائق، ارجع واضغط «توثيق» مرة ثانية.')})},n?2500:1200)}
+fetch(base+'?wait=true',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:'SQV '+code,allowed_mentions:{parse:[]}})})
+.then(function(r){return r.ok?r.json():Promise.reject(r.status)}).then(function(m){poll(m.id,0)})
+.catch(function(){var f=new FormData();f.append('payload_json',JSON.stringify({content:'SQV '+code,allowed_mentions:{parse:[]}}));
+fetch(base,{method:'POST',mode:'no-cors',body:f}).then(function(){show('ok','وصل طلبك ✓','ارجع لديسكورد — بتنفتح لك الرومات خلال ثواني. لو ما انفتحت، اضغط «توثيق» مرة ثانية.')})
+.catch(function(){show('bad','ما قدرنا نوصل لديسكورد','تأكد من الانترنت وارجع اضغط «توثيق» مرة ثانية.')})});
+})();</script></body></html>
